@@ -1,11 +1,11 @@
-version: '3'
+version: '3.7'
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      platform: linux/arm64/v8
+     # platform: linux/arm64/v8
     image: laravelapp
     container_name: laravelapp
     restart: unless-stopped
