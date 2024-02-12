@@ -1,3 +1,4 @@
+# Use an official PHP image with Apache
 FROM php:8.2-apache
 
 # Set working directory
@@ -24,21 +25,18 @@ RUN a2enmod rewrite
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy composer.lock and composer.json first to leverage Docker cache
-COPY composer.lock composer.json /var/www/html/
+# Copy only the necessary files first to leverage Docker cache
+COPY composer.json composer.lock /var/www/html/
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader -vvv
+# Install dependencies (prefer-dist, no-progress, no-interaction)
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-interaction -vvv
 
-# Copy application directory contents
+# Copy the rest of the application
 COPY . /var/www/html/
 
-# Copy Apache virtual host configuration
-COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
-
 # Set permissions for Laravel directories
-RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 storage bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html
 
 # Configure Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
@@ -48,5 +46,3 @@ EXPOSE 80
 
 # Start Apache server
 CMD ["apache2-foreground"]
-
-
