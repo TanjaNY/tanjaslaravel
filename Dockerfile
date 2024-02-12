@@ -28,7 +28,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy only the necessary files first to leverage Docker cache
 COPY composer.json composer.lock /var/www/html/
 
+<<<<<<< HEAD
 # Install dependencies (prefer-dist, no-progress, no-interaction)
+=======
+# Install dependencies (prefer-dist, no-progress, no-interaction)
+
+>>>>>>> aab93a5 ( commit message)
 RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-interaction -vvv
 
 # Copy the rest of the application
